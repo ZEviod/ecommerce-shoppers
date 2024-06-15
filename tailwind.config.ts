@@ -1,3 +1,5 @@
+const { fontFamily } = require("tailwindcss/defaultTheme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -34,6 +36,9 @@ module.exports = {
       },
       boxShadow: {
         bannerShadow: "0 1px 2px 1px #00000026",
+      },
+      fontFamily: {
+        sans: ["var(--font-open_sans)", ...fontFamily.sans],
       },
     },
   },

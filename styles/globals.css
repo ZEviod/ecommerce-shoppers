@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .navBarHover {
+    @apply h-12 px-5 rounded-full bg-transparent flex items-center gap-2 hover:bg-hoverBg duration-300 cursor-pointer;
+  }
+
+  .bottomNavLi {
+    @apply hover:underline underline-offset-2 cursor-pointer decoration-[1px] duration-200;
+  }
+}
