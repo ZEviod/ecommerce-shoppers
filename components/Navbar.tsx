@@ -7,7 +7,7 @@ import NavbarBottom from "./NavbarBottom";
 
 function Navbar() {
   return (
-    <div className="w-full bg-blue text-white">
+    <div className="w-full bg-blue text-white sticky top-0 z-50">
       <div className="w-full h-full border-b-[1px] border-b-white">
         <div className="max-w-Container mx-auto h-20 px-4 flex items-center justify-between gap-2">
           {/* -------------------------------------------------------- */}
