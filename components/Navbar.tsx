@@ -5,12 +5,31 @@ import { AiOutlineHeart, AiOutlineUser } from "react-icons/ai";
 import { BsCart2 } from "react-icons/bs";
 import NavbarBottom from "./NavbarBottom";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { addUser, removeUser } from "../redux/shopperSlice";
 
 function Navbar() {
+  const { data: session } = useSession();
+  const dispatch = useDispatch();
   const productData = useSelector((state: any) => state.shopper.productData);
+  const userInfo = useSelector((state: any) => state.shopper.userInfo);
   const [totalAmt, setTotalAmt] = useState("");
+
+  useEffect(() => {
+    if (session) {
+      dispatch(
+        addUser({
+          name: session.user?.name,
+          email: session.user?.email,
+          image: session.user?.image,
+        })
+      );
+    } else {
+      dispatch(removeUser());
+    }
+  }, [session, dispatch]);
 
   useEffect(() => {
     let price = 0;
@@ -77,13 +96,32 @@ function Navbar() {
           </div>
           {/* ==================== MyItems End here==================== */}
           {/* ==================== Accounts Start here================= */}
-          <div className="navBarHover">
-            <AiOutlineUser className="text-lg" />
-            <div>
-              <p className="text-xs">Sign In</p>
-              <h2 className="text-base font-semibold -mt-1">Account</h2>
+          {userInfo ? (
+            <div onClick={() => signOut()} className="navBarHover">
+              <Image
+                width={500}
+                height={500}
+                className="w-10 rounded-full object-cover"
+                src={userInfo.image}
+                alt="userImg"
+              />
+              <div>
+                <p className="text-xs">Sign Out</p>
+                <h2 className="text-base font-semibold -mt-1">
+                  {userInfo.name}
+                </h2>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div onClick={() => signIn()} className="navBarHover">
+              <AiOutlineUser className="text-lg" />
+              <div>
+                <p className="text-xs">Sign In</p>
+                <h2 className="text-base font-semibold -mt-1">Account</h2>
+              </div>
+            </div>
+          )}
+
           {/* ==================== Accounts End here=================== */}
           {/* ==================== Cart Start here===================== */}
           <Link href="/cart">
