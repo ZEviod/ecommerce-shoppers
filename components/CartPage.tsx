@@ -24,6 +24,8 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
+import StripeCheckout from "react-stripe-checkout";
 
 const CartPage = () => {
   const { data: session } = useSession();
@@ -32,6 +34,8 @@ const CartPage = () => {
   const productData = useSelector((state: any) => state.shopper.productData);
   const userInfo = useSelector((state: any) => state.shopper.userInfo);
   const [warningMsg, setWarningMsg] = useState(false);
+
+  const [payNow, setPayNow] = useState(false);
   //price
   const [totalOldPrice, setTotalOldPrice] = useState(0);
   const [totalSavings, setTotalSavings] = useState(0);
@@ -53,19 +57,30 @@ const CartPage = () => {
     setTotalAmt(amt);
   }, [productData]);
 
-  const handleCheckout = async () => {
-    const stripe = await stripePromise;
+  // const handleCheckout = async () => {
+  //   const stripe = await stripePromise;
 
-    // create a checkout session
-    const checkoutSession = await axios.post("api/create-checkout-session", {
-      items: productData,
-      email: session?.user?.email,
-    });
-    //Redirecting user/customer to Stripe Checkout
-    const result: any = await stripe?.redirectToCheckout({
-      sessionId: checkoutSession.data.id,
-    });
-    if (result?.error) alert(result?.error.message);
+  //   // create a checkout session
+  //   const checkoutSession = await axios.post("api/create-checkout-session", {
+  //     items: productData,
+  //     email: session?.user?.email,
+  //   });
+  //   //Redirecting user/customer to Stripe Checkout
+  //   const result: any = await stripe?.redirectToCheckout({
+  //     sessionId: checkoutSession.data.id,
+  //   });
+  //   if (result?.error) alert(result?.error.message);
+  // };
+
+  // 4242424242424242
+  // 1234 123
+
+  const handleCheckout = () => {
+    if (userInfo) {
+      setPayNow(true);
+    } else {
+      toast.error("Please sign in to checkout");
+    }
   };
 
   return (
@@ -245,6 +260,19 @@ const CartPage = () => {
               <button className="bg-blue hover:bg-hoverBg w-full text-white h-10 rounded-full font-semibold duration-300">
                 Continue to checkout
               </button>
+            )}
+            {payNow && (
+              <div className="w-ful mt-6 flex items-center justify-center">
+                <StripeCheckout
+                  stripeKey="pk_test_51OxfMpSE8SusuSkfehSsbnJdcu2L50ZWCVTb02iiu7eG7hc7eM7CfWGOi8eEw3Z0kXqlEr0OpcaWKOHTQGzn58Os00woAHsJUM"
+                  name="shoppers"
+                  amount={totalAmt * 100}
+                  label="Pay to Shoppers"
+                  description={`Your Payment is $${totalAmt}`}
+                  token={(token) => console.log(token)}
+                  email={userInfo?.email}
+                />
+              </div>
             )}
             {!userInfo && (
               <p className="text-sm text-center text-red-500 -mt-4 font-semibold">
