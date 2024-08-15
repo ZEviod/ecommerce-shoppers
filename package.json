@@ -11,7 +11,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
     "@stripe/stripe-js": "^3.5.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "next": "14.2.4",
     "next-auth": "^4.24.7",
     "react": "^18",
